@@ -10,3 +10,13 @@ The API is deployed separately. Set the repository **variable** `API_BASE_URL` t
 The server needs the private `OPENAI_API_KEY`, mail provider settings, allowed frontend origins, and production anti-bot settings documented in README.md. The OpenAI key is currently configured only in ignored local `.env`; it must be added to the selected backend's secret store before activating the live service.
 
 Only the four GitHub Pages A records at `@` and the `www` CNAME need changing in GoDaddy. Preserve nameservers, `_domainconnect`, and mail records. GitHub Pages cannot execute the Express server or safely hold an OpenAI key in frontend JavaScript.
+
+## Backend deployment
+
+The included Dockerfile runs as a non-root user and excludes local environment files from the build context. It supports a Node/container host such as Render or Railway. A native Node deployment can instead use `npm ci && npm run build` as its build command and `npm start` as its start command. Set `HOST=0.0.0.0`; use the hosting provider's `PORT`. Health-check path: `/api/health`.
+
+Add credentials through the hosting provider's private environment settings. Do not put them in repository variables, build arguments, client code, or DNS records. Use `PUBLIC_ORIGIN=https://dental-care24.com` and `ALLOWED_ORIGINS=https://dental-care24.com,https://www.dental-care24.com`. Configure the verified mail sender and anti-bot keys as described in README.md. Retain one server instance until rate limits and job state have shared storage.
+
+Image requests can take several minutes and upload up to 30 MB, so confirm the selected host's request limits before deployment. The current synchronous endpoint is unsuitable for a host with a 4.5 MB request/response limit. A sleeping free instance is not recommended for a production clinic.
+
+Once deployed, verify `/api/health` and `/api/config`, set GitHub repository variable `API_BASE_URL` to the backend HTTPS origin, and rerun the Pages workflow. Verify a real consented image submission and delivery to the clinic before announcing the AI feature as live.
