@@ -1,3 +1,4 @@
+import { newRequestId } from "../requestId";
 import { useEffect, useRef, useState } from "react";
 import {
   ArrowLeft,
@@ -125,7 +126,7 @@ export default function SmileLab({ config }: { config: Config | null }) {
   const input = useRef<HTMLInputElement>(null);
   const panel = useRef<HTMLDivElement>(null);
   const previousStep = useRef(step);
-  const requestId = useRef(crypto.randomUUID());
+  const requestId = useRef(newRequestId());
   useEffect(() => {
     if (previousStep.current === step) return;
     previousStep.current = step;
@@ -138,7 +139,7 @@ export default function SmileLab({ config }: { config: Config | null }) {
     });
   }, [step]);
   useEffect(() => {
-    requestId.current = crypto.randomUUID();
+    requestId.current = newRequestId();
   }, [name, phone, treatment, region]);
   useEffect(() => {
     const urls = files.map((f) => URL.createObjectURL(f));
@@ -164,7 +165,7 @@ export default function SmileLab({ config }: { config: Config | null }) {
     }
     setFiles([...files, ...incoming]);
     setError("");
-    requestId.current = crypto.randomUUID();
+    requestId.current = newRequestId();
   }
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -442,7 +443,7 @@ export default function SmileLab({ config }: { config: Config | null }) {
                       aria-label={`הסרת תמונה ${i + 1}`}
                       onClick={() => {
                         setFiles(files.filter((_, j) => i !== j));
-                        requestId.current = crypto.randomUUID();
+                        requestId.current = newRequestId();
                       }}
                     >
                       <X size={14} />
@@ -535,7 +536,7 @@ export default function SmileLab({ config }: { config: Config | null }) {
                 setFiles([]);
                 setResults([]);
                 setConsent(false);
-                requestId.current = crypto.randomUUID();
+                requestId.current = newRequestId();
               }}
             >
               התחלה מחדש

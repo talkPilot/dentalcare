@@ -1,3 +1,4 @@
+import { newRequestId } from "./requestId";
 import { useEffect, useRef, useState } from "react";
 import {
   motion,
@@ -465,7 +466,7 @@ function Contact({ config }: { config: Config | null }) {
     [done, setDone] = useState(false),
     [token, setToken] = useState(""),
     [resetKey, setResetKey] = useState(0);
-  const requestId = useRef(crypto.randomUUID());
+  const requestId = useRef(newRequestId());
   async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!config?.contactReady) {
@@ -565,7 +566,7 @@ function Contact({ config }: { config: Config | null }) {
           <form
             onSubmit={submit}
             onChange={() => {
-              requestId.current = crypto.randomUUID();
+              requestId.current = newRequestId();
             }}
           >
             <h3>נעים להכיר.</h3>
