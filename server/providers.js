@@ -105,7 +105,9 @@ export function makeProviders(env, fetcher = fetch) {
     return Buffer.from(base64, "base64");
   }
   async function verifyChallenge(token, ip) {
-    if (!env.TURNSTILE_SECRET_KEY) return env.NODE_ENV !== "production";
+    if (!env.TURNSTILE_SECRET_KEY)
+      return env.NODE_ENV !== "production" ||
+        (env.ALLOW_WITHOUT_TURNSTILE === "true" && !env.TURNSTILE_SITE_KEY);
     const response = await fetcher(
       "https://challenges.cloudflare.com/turnstile/v0/siteverify",
       {

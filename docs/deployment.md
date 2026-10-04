@@ -5,6 +5,8 @@ Repository: https://github.com/talkPilot/dentalcare
 
 GitHub Actions builds and publishes `dist/` from `main`. The Pages artifact contains no server source or environment files. `scripts/build-pages.mjs` emits individual entry pages so direct treatment links and page refreshes work on static hosting.
 
+The same workflow deploys the API after tests and the build pass. Store the service's existing Render deploy hook in repository secret `RENDER_DEPLOY_HOOK_URL`. It sends the exact Git commit to Render and waits for `/api/health` to report that commit before marking the backend job successful. Configure Render's native Auto-Deploy as Off to avoid duplicate deployments; GitHub Actions owns the trigger. This works with the public Git repository without granting Render access to other repositories.
+
 The API is deployed separately. Set the repository **variable** `API_BASE_URL` to its HTTPS origin (for example, the eventual `https://api.dental-care24.com`) and rerun the Pages workflow. This variable is a public URL, never an API key.
 
 Current backend: `https://dentalcare-api-h0no.onrender.com` (Render service `dentalcare-api`, Frankfurt, 512 MB). The GitHub `API_BASE_URL` variable points to this origin. The selected compute costs $7/month before taxes and usage charges. Initial configuration processes one smile job at a time and caps generation at 30 images per day per process.

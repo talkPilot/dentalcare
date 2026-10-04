@@ -67,8 +67,9 @@ export function createApp({
   const productionReady =
     env.NODE_ENV !== "production" ||
     Boolean(
-      env.TURNSTILE_SECRET_KEY &&
-      env.TURNSTILE_SITE_KEY &&
+      ((env.TURNSTILE_SECRET_KEY && env.TURNSTILE_SITE_KEY) ||
+        (env.ALLOW_WITHOUT_TURNSTILE === "true" &&
+          !env.TURNSTILE_SECRET_KEY && !env.TURNSTILE_SITE_KEY)) &&
       env.PUBLIC_ORIGIN &&
       env.PRIVACY_REVIEWED === "true",
     );
@@ -95,7 +96,9 @@ export function createApp({
       offerApproved: env.OFFER_APPROVED === "true",
     }),
   );
-  app.get("/api/health", (_req, res) => res.json({ ok: true }));
+  app.get("/api/health", (_req, res) =>
+    res.json({ ok: true, version: env.RENDER_GIT_COMMIT || "local" }),
+  );
   app.use("/api", (req, res, next) => {
     if (req.method === "GET") return next();
     const origin = req.get("origin");

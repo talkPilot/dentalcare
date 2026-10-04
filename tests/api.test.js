@@ -66,6 +66,20 @@ test("production remains closed until origin, anti-bot and privacy configuration
   const { app } = setup({}, { ...env, NODE_ENV: "production" });
   assert.equal((await request(app).get("/api/config")).body.smileReady, false);
 });
+test("production can explicitly run without Turnstile but partial configuration remains closed", async () => {
+  const configured = {
+    ...env, NODE_ENV: "production", PUBLIC_ORIGIN: "https://dental-care24.com",
+    PRIVACY_REVIEWED: "true", ALLOW_WITHOUT_TURNSTILE: "true",
+  };
+  const { app } = setup({}, configured);
+  assert.equal((await request(app).get("/api/config")).body.smileReady, true);
+  assert.equal(await makeProviders(configured).verifyChallenge("", "127.0.0.1"), true);
+  const partial = {...configured, TURNSTILE_SITE_KEY: "site-only"};
+  assert.equal((await request(setup({}, partial).app).get("/api/config")).body.smileReady, false);
+  assert.equal(await makeProviders(partial).verifyChallenge("", "127.0.0.1"), false);
+  assert.equal(await makeProviders({...configured, ALLOW_WITHOUT_TURNSTILE: "false"}).verifyChallenge("", "127.0.0.1"), false);
+  assert.equal((await request(app).post("/api/contact").set("Origin", "https://evil.example").send(lead())).status, 403);
+});
 test("invalid phone and missing consent are rejected", async () => {
   const { app, calls } = setup();
   for (const extra of [{ phone: "abc" }, { consent: "false" }, { name: "a" }])
