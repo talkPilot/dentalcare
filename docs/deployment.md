@@ -7,7 +7,9 @@ GitHub Actions builds and publishes `dist/` from `main`. The Pages artifact cont
 
 The API is deployed separately. Set the repository **variable** `API_BASE_URL` to its HTTPS origin (for example, the eventual `https://api.dental-care24.com`) and rerun the Pages workflow. This variable is a public URL, never an API key.
 
-The server needs the private `OPENAI_API_KEY`, mail provider settings, allowed frontend origins, and production anti-bot settings documented in README.md. The OpenAI key is currently configured only in ignored local `.env`; it must be added to the selected backend's secret store before activating the live service.
+Current backend: `https://dentalcare-api-h0no.onrender.com` (Render service `dentalcare-api`, Frankfurt, 512 MB). The GitHub `API_BASE_URL` variable points to this origin. The selected compute costs $7/month before taxes and usage charges. Initial configuration processes one smile job at a time and caps generation at 30 images per day per process.
+
+The server needs the private `OPENAI_API_KEY`, mail provider settings, allowed frontend origins, and production anti-bot settings documented in README.md. The OpenAI key has been entered into Render's private environment settings and is also in ignored local `.env`. The mail and anti-bot credentials must still be configured before the public forms become available.
 
 Only the four GitHub Pages A records at `@` and the `www` CNAME need changing in GoDaddy. Preserve nameservers, `_domainconnect`, and mail records. GitHub Pages cannot execute the Express server or safely hold an OpenAI key in frontend JavaScript.
 
