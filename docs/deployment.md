@@ -1,19 +1,18 @@
-# GitHub Pages + secure API
+# Render production hosting
 
-Frontend domain: https://dental-care24.com
+Domain: https://dental-care24.com
 Repository: https://github.com/talkPilot/dentalcare
+Managed HTTPS address: https://dentalcare-api-h0no.onrender.com
 
-GitHub Actions builds and publishes `dist/` from `main`. The Pages artifact contains no server source or environment files. `scripts/build-pages.mjs` emits individual entry pages so direct treatment links and page refreshes work on static hosting.
+The frontend and API now run together on the existing Render service `dentalcare-api` (Frankfurt, 512 MB, $7/month before taxes and usage). The custom domain moved from GitHub Pages because certificate provisioning remained stuck. GitHub keeps the source and triggers deployment on every push to `main`; no new server subscription is required.
 
-The same workflow deploys the API after tests and the build pass. Store the service's existing Render deploy hook in repository secret `RENDER_DEPLOY_HOOK_URL`. It sends the exact Git commit to Render and waits for `/api/health` to report that commit before marking the backend job successful. Configure Render's native Auto-Deploy as Off to avoid duplicate deployments; GitHub Actions owns the trigger. This works with the public Git repository without granting Render access to other repositories.
+The workflow runs tests and the frontend build, sends the exact commit to Render using repository secret `RENDER_DEPLOY_HOOK_URL`, and waits until `/api/health` reports that commit. Repository variable `API_BASE_URL` holds the public managed Render origin for health checks. Render native Auto-Deploy stays Off to avoid duplicate runs. The Docker build serves the frontend and API from the same origin.
 
-The API is deployed separately. Set the repository **variable** `API_BASE_URL` to its HTTPS origin (for example, the eventual `https://api.dental-care24.com`) and rerun the Pages workflow. This variable is a public URL, never an API key.
-
-Current backend: `https://dentalcare-api-h0no.onrender.com` (Render service `dentalcare-api`, Frankfurt, 512 MB). The GitHub `API_BASE_URL` variable points to this origin. The selected compute costs $7/month before taxes and usage charges. Initial configuration processes one smile job at a time and caps generation at 30 images per day per process.
+`scripts/build-pages.mjs` remains available for optional static exports but GitHub Pages is no longer a production deployment target. Initial configuration processes one smile job at a time and caps generation at 30 images per day per process.
 
 The server uses private OpenAI and Resend keys in Render environment settings. Resend is scoped to sending from the verified `dental-care24.com` domain; the sender is `Dental Care 24 <hello@dental-care24.com>`. The operator explicitly chose to launch without Turnstile: `ALLOW_WITHOUT_TURNSTILE=true`. Origin checks, honeypot, rate limits and image quotas remain in place. To enable Turnstile later, add both keys and remove that opt-out.
 
-Only the four GitHub Pages A records at `@` and the `www` CNAME need changing in GoDaddy. Preserve nameservers, `_domainconnect`, and mail records. GitHub Pages cannot execute the Express server or safely hold an OpenAI key in frontend JavaScript.
+Production DNS: one A record at `@` to `216.24.57.1`, and `www` CNAME to `dentalcare-api-h0no.onrender.com`. Render provisions TLS and redirects www to the root domain. Preserve nameservers, `_domainconnect`, and all Resend mail records.
 
 ## Backend deployment
 
@@ -23,4 +22,4 @@ Add credentials through the hosting provider's private environment settings. Do 
 
 Image requests can take several minutes and upload up to 30 MB, so confirm the selected host's request limits before deployment. The current synchronous endpoint is unsuitable for a host with a 4.5 MB request/response limit. A sleeping free instance is not recommended for a production clinic.
 
-Once deployed, verify `/api/health` and `/api/config`, set GitHub repository variable `API_BASE_URL` to the backend HTTPS origin, and rerun the Pages workflow. Verify a real consented image submission and delivery to the clinic before announcing the AI feature as live.
+After deployment, verify `/api/health`, `/api/config`, the custom-domain certificate, and direct treatment URLs. The managed Render URL is also accepted as an exact allowed origin, so forms work there during DNS propagation. Other Render sites remain blocked.
