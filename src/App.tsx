@@ -745,7 +745,7 @@ function Legal({ accessibility = false }: { accessibility?: boolean }) {
           <p>
             אפשר לפנות באמצעות <a href="/#contact">טופס יצירת הקשר</a> ולתאר
             באיזה עמוד ובאיזה מכשיר נתקלתם בקושי. ניתן לפנות גם במייל
-            yosef2112@gmail.com או בטלפון 052-5212118 ולציין שמדובר בבקשת
+            yosef2112b@gmail.com או בטלפון 052-5212118 ולציין שמדובר בבקשת
             נגישות.
           </p>
         </>
@@ -793,7 +793,7 @@ function Legal({ accessibility = false }: { accessibility?: boolean }) {
           <h2>בקשות בנוגע למידע</h2>
           <p>
             ניתן לפנות למרפאה בבקשה לעיון, תיקון או מחיקה באמצעות{" "}
-            <a href="/#contact">יצירת קשר</a>. לפניות: yosef2112@gmail.com,
+            <a href="/#contact">יצירת קשר</a>. לפניות: yosef2112b@gmail.com,
             טלפון 052-5212118. ניתן לפנות גם בטלפון 053-4004600.
           </p>
         </>
