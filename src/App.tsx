@@ -1,3 +1,4 @@
+import { fetchWithTimeout } from "./fetchWithTimeout";
 import { newRequestId } from "./requestId";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -11,11 +12,8 @@ import {
   ArrowLeft,
   ArrowUpLeft,
   CheckCircle2,
-  ChevronDown,
-  Heart,
   Menu,
   MessageCircle,
-  MoveUpRight,
   Phone,
   Plus,
   ShieldCheck,
@@ -71,6 +69,7 @@ function Reveal({
   );
 }
 function Header() {
+  const { scrollYProgress } = useScroll();
   const [open, setOpen] = useState(false);
   const links = [
     ["הגישה שלנו", "about"],
@@ -84,6 +83,11 @@ function Header() {
         דילוג לתוכן
       </a>
       <header>
+        <motion.div
+          className="reading-progress"
+          style={{ scaleX: scrollYProgress }}
+          aria-hidden="true"
+        />
         <Logo />
         <nav className={open ? "nav open" : "nav"} aria-label="ניווט ראשי">
           {links.map(([label, id]) => (
@@ -114,312 +118,262 @@ function Hero() {
     target: ref,
     offset: ["start start", "end start"],
   });
-  const y = useTransform(scrollYProgress, [0, 1], [0, 95]);
+  const y = useTransform(scrollYProgress, [0, 1], [0, 120]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.12]);
   const reduced = useReducedMotion();
   return (
     <section ref={ref} className="hero">
-      <div className="hero-copy">
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7 }}
-        >
-          <span className="eyebrow">
-            <span className="live-dot" /> רפואת שיניים. עם מקום בשבילך.
-          </span>
-        </motion.div>
-        <h1>
-          {["לא רק חיוך.", "הדרך שלך"].map((line, i) => (
-            <motion.span
-              key={line}
-              initial={{ opacity: 0, y: 25 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.1 + i * 0.12 }}
-            >
-              {line}
-              <br />
-            </motion.span>
-          ))}
-          <motion.span
-            className="hero-last"
-            initial={{ opacity: 0, y: 25 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.35 }}
-          >
-            להרגיש <em>את עצמך.</em>
-            <svg viewBox="0 0 260 25" aria-hidden="true">
-              <path d="M4 13Q117-8 251 12M34 21Q145 5 236 20" />
-            </svg>
-          </motion.span>
-        </h1>
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.55, duration: 0.8 }}
-        >
-          יש חיוך שהוא רק שלך.
-          <br />
-          אנחנו כאן כדי לתת לו את המקום שמגיע לו —<br />
-          עם הקשבה, דיוק ורפואת שיניים שרואה אותך.
-        </motion.p>
-        <div className="hero-actions">
-          <a className="button primary" href="#smile-lab">
-            <Sparkles size={18} /> לגלות את החיוך שלי <ArrowLeft size={20} />
-          </a>
-          <a className="text-link" href="#treatments">
-            להכיר את הטיפולים <ArrowDown size={17} />
-          </a>
-        </div>
-        <div className="hero-bottom">
-          <span>
-            <ShieldCheck size={17} /> תכנון אישי, בקצב שלך
-          </span>
-          <span className="small-divider" />
-          <span>טכנולוגיה מתקדמת. גישה אנושית.</span>
-        </div>
-      </div>
       <div className="hero-visual">
         <motion.img
-          style={reduced ? undefined : { y }}
+          style={reduced ? undefined : { y, scale }}
           src="/images/smile-hero.webp"
           className="hero-photo"
-          alt="אישה מחייכת בצילום קונספט של דנטל קר 24"
+          alt="צילום קונספט של אישה מחייכת"
           fetchPriority="high"
         />
-        <div className="photo-grain" />
-        <div className="photo-topline">
-          <span>YOUR SMILE. YOUR SIGNATURE.</span>
-          <Plus size={19} />
-        </div>
-        <div className="hero-seal">
-          <Sparkles size={24} />
-          <span>חיוך שמרגיש</span>
-          <strong>בדיוק את.</strong>
-        </div>
-        <div className="smile-corner c1" />
-        <div className="smile-corner c2" />
-        <div className="smile-corner c3" />
-        <div className="smile-corner c4" />
-        <div className="photo-bottom">
-          <span>
-            EVERY SMILE
-            <br />
-            TELLS A STORY.
-          </span>
-          <span>
-            01 —<br />
-            DENTAL CARE 24
-          </span>
-        </div>
+        <div className="hero-shade" />
+        <div className="gold-arc" aria-hidden="true" />
         <span className="hero-concept">צילום קונספט</span>
-        <a className="floating-note" href="#smile-lab">
-          <span className="note-icon">
-            <Sparkles size={22} />
-          </span>
-          <span>
-            <strong>החיוך הבא שלך, כבר כאן.</strong>
-            <small>לגלות אפשרות חדשה עם הדמיית AI</small>
-          </span>
-          <ArrowUpLeft size={21} />
-        </a>
+        <span className="portrait-index" dir="ltr">
+          THE ART OF A NATURAL SMILE / 01
+        </span>
       </div>
+      <div className="hero-copy">
+        <motion.div
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+        >
+          <span className="eyebrow">
+            <span className="live-dot" /> DENTAL CARE 24 · תל אביב / רמלה
+          </span>
+          <h1>
+            החיוך שלך.
+            <br />
+            <em>יצירה אישית.</em>
+          </h1>
+          <p>
+            דיוק של רפואה. מחשבה של עיצוב.
+            <br />
+            רפואת שיניים שמתחילה בך, וממשיכה בכל פרט.
+          </p>
+          <div className="hero-actions">
+            <a className="button primary" href="#smile-lab">
+              לגלות את החיוך שלי <ArrowUpLeft size={21} />
+            </a>
+            <a className="text-link" href="#treatments">
+              להכיר את הטיפולים <ArrowDown size={16} />
+            </a>
+          </div>
+        </motion.div>
+      </div>
+      <div className="hero-foot">
+        <span dir="ltr">INDIVIDUAL BY DESIGN.</span>
+        <a href="#about">
+          לגלול. להכיר. לחייך. <ArrowDown size={17} />
+        </a>
+        <span>אסתטיקה · שיקום · רפואת שיניים</span>
+      </div>
+      <span className="hero-watermark" aria-hidden="true">
+        SMILE.
+      </span>
     </section>
   );
 }
 function Marquee() {
   return (
-    <div className="marquee" aria-hidden="true">
-      <div>
-        {Array.from({ length: 4 }, (_, i) => (
-          <span key={i}>
-            A LITTLE CARE. A BIG SMILE. <span className="marquee-star">✳</span>{" "}
-            חיוך טוב מתחיל בהרגשה טובה <span className="marquee-star">✳</span>
-          </span>
-        ))}
-      </div>
+    <div className="editorial-band">
+      <span dir="ltr">DENTAL CARE / 24</span>
+      <span>מקום לחיוך שהוא רק שלך.</span>
+      <span dir="ltr">ESTHETICS. PRECISION. CARE.</span>
     </div>
   );
 }
 function Services() {
+  const [active, setActive] = useState(0);
   return (
     <section id="treatments" className="section treatments">
       <Reveal className="section-heading">
         <div>
-          <span className="eyebrow">01 / הטיפולים שלנו</span>
+          <span className="eyebrow">02 / קולקציית הטיפולים</span>
           <h2>
-            לכל חיוך,
+            הפרטים הקטנים.
             <br />
-            <em>הדרך שלו.</em>
+            <em>התמונה השלמה.</em>
           </h2>
         </div>
-        <div>
-          <p>
-            מאסתטיקה ועד שיקום — מתחילים בהיכרות איתך.
-            <br />
-            מגלים את האפשרויות ובונים תוכנית שמתאימה לך.
-          </p>
-          <a className="text-link" href="#contact">
-            נמצא יחד את הטיפול שלך <ArrowUpLeft size={18} />
-          </a>
-        </div>
+        <p>
+          אסתטיקה, בריאות ותפקוד.
+          <br />
+          לכל חיוך אנחנו מתכננים דרך משלו.
+        </p>
       </Reveal>
-      <div className="treatment-grid">
-        {treatments.slice(0, 3).map((t) => (
-          <Reveal key={t.slug}>
-            <a
-              className={`treatment-card ${t.type}`}
+      <div className="treatment-gallery">
+        <div className="treatment-sculpture" aria-hidden="true">
+          <span className="sculpture-label" dir="ltr">
+            THE ANATOMY OF A SMILE
+          </span>
+          <div className="sculpture-ring" />
+          <div className="sculpture-ring second" />
+          <motion.div
+            className="sculpture-object"
+            key={active}
+            initial={{ opacity: 0, rotate: -8, y: 16 }}
+            animate={{ opacity: 1, rotate: 0, y: 0 }}
+            transition={{ duration: 0.7 }}
+          >
+            <Tooth variant={treatments[active].type} />
+          </motion.div>
+          <span className="sculpture-number">{treatments[active].number}</span>
+          <span className="sculpture-caption">{treatments[active].en}</span>
+        </div>
+        <div className="treatment-list">
+          {treatments.map((t, i) => (
+            <motion.a
+              key={t.slug}
+              className={`treatment-row ${active === i ? "selected" : ""}`}
               href={`/treatments/${t.slug}`}
+              onMouseEnter={() => setActive(i)}
+              onFocus={() => setActive(i)}
+              onViewportEnter={() => setActive(i)}
+              viewport={{ margin: "-40% 0px -40% 0px" }}
             >
-              <div className="card-top">
-                <span>{t.number} /</span>
-                <ArrowUpLeft size={22} />
-              </div>
-              <div className="tooth-scene">
-                <div className="tooth-orbit" />
-                <Tooth variant={t.type} />
-                <span className="tooth-caption">DESIGNED AROUND YOU</span>
-              </div>
-              <div className="card-copy">
+              <span className="treatment-index">{t.number}</span>
+              <div>
                 <small>{t.en}</small>
                 <h3>{t.name}</h3>
                 <p>{t.short}</p>
-                <div className="card-footer">
-                  <span>{t.tags.join(" · ")}</span>
-                  <span>
-                    לגלות עוד <ArrowLeft size={16} />
-                  </span>
-                </div>
               </div>
-            </a>
-          </Reveal>
-        ))}
-      </div>
-      <div className="other-treatments">
-        {treatments.slice(3).map((t) => (
-          <a key={t.slug} href={`/treatments/${t.slug}`}>
-            <span className="line-icon">
-              {t.slug === "whitening" ? <Sparkles /> : <MoveUpRight />}
-            </span>
-            <span>
-              <strong>{t.name}</strong>
-              <small>{t.short}</small>
-            </span>
-            <ArrowUpLeft />
-          </a>
-        ))}
+              <span className="round-arrow">
+                <ArrowUpLeft size={23} />
+              </span>
+            </motion.a>
+          ))}
+        </div>
       </div>
     </section>
   );
 }
 function About() {
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+  const x = useTransform(scrollYProgress, [0, 1], [65, -65]);
+  const reduced = useReducedMotion();
   return (
-    <section id="about" className="about section">
-      <Reveal className="about-art">
-        <div className="orbit o1" />
-        <div className="orbit o2" />
-        <div className="orbit o3" />
-        <span className="orbit-dot" />
-        <SmileParticles />
-        <span className="art-top">PRECISION MEETS EMPATHY</span>
-        <span className="art-number">
-          24<span>care, at heart.</span>
-        </span>
-        <span className="art-bottom">
-          מחשבה על כל פרט.
-          <br />
-          מקום לכל אדם.
-        </span>
-      </Reveal>
-      <Reveal className="about-copy">
-        <span className="eyebrow">02 / הגישה שלנו</span>
+    <section id="about" className="about section" ref={ref}>
+      <div className="about-intro">
+        <span className="eyebrow">01 / הפילוסופיה שלנו</span>
+        <span dir="ltr">BEYOND THE SMILE.</span>
+      </div>
+      <Reveal className="manifesto">
         <h2>
-          לפני השיניים,
+          לא משנים את מי שאתם.
           <br />
-          <em>רואים אנשים.</em>
+          <em>נותנים לכם עוד סיבה</em>
+          <br />
+          להיות עצמכם.
         </h2>
-        <p className="large-copy">
-          את התחושה הזו, שאפשר פשוט לחייך בלי לחשוב על זה? בשביל זה אנחנו כאן.
-        </p>
-        <p>
-          בדנטל קר 24 אנחנו מאמינים שחוויית טיפול טובה מתחילה בהקשבה. במה שחשוב
-          לכם, במה שמטריד אתכם ובדרך שבה הייתם רוצים להרגיש.
-        </p>
-        <div className="values">
-          <div>
-            <Heart size={20} />
-            <span>
-              <strong>הקשבה לפני הכול</strong>
-              <small>זמן לשאול, להבין ולהרגיש בנוח.</small>
-            </span>
-          </div>
-          <div>
-            <Sparkles size={20} />
-            <span>
-              <strong>טכנולוגיה עם מגע אישי</strong>
-              <small>כלים חדשים, עם מחשבה על החיוך הייחודי שלך.</small>
-            </span>
-          </div>
-          <div>
-            <ShieldCheck size={20} />
-            <span>
-              <strong>שקיפות לאורך הדרך</strong>
-              <small>אפשרויות, ציפיות ותוכנית ברורה לפני שמתחילים.</small>
-            </span>
-          </div>
-        </div>
-        <a className="text-link" href="#contact">
-          נעים להכיר <ArrowLeft size={18} />
-        </a>
       </Reveal>
+      <div className="about-bottom">
+        <motion.div
+          className="signature-line"
+          style={reduced ? undefined : { x }}
+          aria-hidden="true"
+        >
+          Care, in every detail.
+        </motion.div>
+        <div>
+          <p>
+            חיוך יפה מתחיל בהקשבה. בדנטל קר 24 אנחנו מחברים בין תכנון מדויק לבין
+            ההיכרות איתכם — הרצונות, החששות והפרטים שהופכים את החיוך לשלכם.
+          </p>
+          <a className="text-link" href="#contact">
+            נעים להכיר <ArrowUpLeft size={18} />
+          </a>
+        </div>
+      </div>
+      <div className="values">
+        <div>
+          <span>01</span>
+          <strong>קודם מקשיבים.</strong>
+          <small>מקום לשאלות, לרצונות ולקצב שלכם.</small>
+        </div>
+        <div>
+          <span>02</span>
+          <strong>מדייקים יחד.</strong>
+          <small>אפשרויות ברורות ותוכנית טיפול אישית.</small>
+        </div>
+        <div>
+          <span>03</span>
+          <strong>רואים את האדם.</strong>
+          <small>מחשבה על ההרגשה, לצד המראה.</small>
+        </div>
+      </div>
     </section>
   );
 }
 function Process() {
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start center", "end center"],
+  });
+  const reduced = useReducedMotion();
   return (
-    <section className="section process">
-      <Reveal className="section-heading">
-        <div>
-          <span className="eyebrow">04 / הדרך לחיוך שלך</span>
-          <h2>
-            צעד קטן.
-            <br />
-            <em>התחלה של שינוי.</em>
-          </h2>
-        </div>
-        <p>
-          לא צריך לדעת מראש מה נכון לך.
+    <section className="section process" ref={ref}>
+      <div className="process-intro">
+        <span className="eyebrow">04 / הדרך שלך</span>
+        <h2>
+          כל שינוי גדול
           <br />
-          אנחנו כאן כדי לגלות את זה יחד.
+          מתחיל ב<em>צעד.</em>
+        </h2>
+        <p>
+          תהליך ברור. קשר אישי.
+          <br />
+          ומישהו שמלווה אותך בדרך.
         </p>
-      </Reveal>
-      <div className="process-grid">
+        <div className="journey-emblem" aria-hidden="true">
+          <SmileParticles />
+        </div>
+      </div>
+      <div className="journey">
+        <div className="journey-track" aria-hidden="true">
+          <motion.span
+            style={reduced ? { scaleY: 1 } : { scaleY: scrollYProgress }}
+          />
+        </div>
         {[
           [
-            "נפגשים עם האפשרויות",
-            "משאירים פרטים או מתנסים בהדמיה ומתחילים לראות כיוון חדש.",
+            "01",
+            "להכיר.",
+            "משאירים פרטים או מתנסים בהדמיה. מספרים לנו איך הייתם רוצים להרגיש עם החיוך שלכם.",
           ],
           [
-            "מדברים, באמת",
-            "פגישת היכרות ובדיקה כדי להבין את הרצונות, הצרכים והאפשרויות שלך.",
+            "02",
+            "להבין.",
+            "נפגשים לשיחה ובדיקה. מכירים את מצב השיניים ואת אפשרויות הטיפול המתאימות לכם.",
           ],
           [
-            "מתכננים יחד",
-            "בונים תוכנית טיפול אישית, עם הסבר ברור על השלבים והעלויות.",
+            "03",
+            "לתכנן.",
+            "בונים תוכנית אישית. מדברים על השלבים, הציפיות והעלויות, לפני שמתחילים.",
           ],
           [
-            "מחייכים לאורך הדרך",
-            "ממשיכים בטיפול ובמעקב, עם הנחיות לשמירה על בריאות החיוך.",
+            "04",
+            "לחייך.",
+            "ממשיכים לטיפול ולמעקב, עם הנחיות לשמירה על בריאות החיוך לאורך הדרך.",
           ],
-        ].map(([title, text], i) => (
-          <Reveal key={title} className="process-item">
-            <div className="process-number">
-              0{i + 1}
-              <span>
-                <ArrowLeft size={19} />
-              </span>
+        ].map(([n, title, text]) => (
+          <Reveal key={n} className="journey-step">
+            <span>{n}</span>
+            <div>
+              <h3>{title}</h3>
+              <p>{text}</p>
             </div>
-            <h3>{title}</h3>
-            <p>{text}</p>
           </Reveal>
         ))}
       </div>
@@ -479,12 +433,19 @@ function Contact({ config }: { config: Config | null }) {
     setBusy(true);
     setStatus("");
     try {
-      const response = await fetch(apiUrl("/api/contact"), {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...data, token, requestId: requestId.current }),
-        signal: AbortSignal.timeout(30000),
-      });
+      const response = await fetchWithTimeout(
+        apiUrl("/api/contact"),
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...data,
+            token,
+            requestId: requestId.current,
+          }),
+        },
+        30000,
+      );
       const body = await response.json();
       if (!response.ok) throw new Error(body.error);
       setDone(true);
@@ -676,7 +637,9 @@ function Footer() {
         </a>
       </div>
       <div className="footer-wordmark" dir="ltr">
-        a reason to smile<span>✳</span>
+        YOUR SMILE.
+        <br />
+        <span>OUR SIGNATURE.</span>
       </div>
       <div className="footer-bottom">
         <span>© {new Date().getFullYear()} דנטל קר 24</span>
@@ -860,8 +823,8 @@ export default function App() {
           <>
             <Hero />
             <Marquee />
-            <Services />
             <About />
+            <Services />
             <SmileLab config={config} />
             <Process />
             {config?.offerApproved && (

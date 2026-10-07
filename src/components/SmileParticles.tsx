@@ -80,7 +80,7 @@ export default function SmileParticles() {
           y += (dy / (d || 1)) * force;
         }
         const opacity = 0.18 + (p.z + 1) * 0.22;
-        context!.fillStyle = `rgba(50,112,108,${opacity})`;
+        context!.fillStyle = `rgba(213,180,112,${opacity})`;
         context!.beginPath();
         context!.arc(
           x,

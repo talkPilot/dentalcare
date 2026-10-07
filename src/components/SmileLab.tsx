@@ -1,3 +1,4 @@
+import { fetchWithTimeout } from "../fetchWithTimeout";
 import { newRequestId } from "../requestId";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -197,11 +198,14 @@ export default function SmileLab({ config }: { config: Config | null }) {
     }).forEach(([k, v]) => data.append(k, v));
     files.forEach((f) => data.append("photos", f));
     try {
-      const res = await fetch(apiUrl("/api/smile"), {
-        method: "POST",
-        body: data,
-        signal: AbortSignal.timeout(240000),
-      });
+      const res = await fetchWithTimeout(
+        apiUrl("/api/smile"),
+        {
+          method: "POST",
+          body: data,
+        },
+        240000,
+      );
       const body = await res.json();
       if (!res.ok)
         throw new Error(

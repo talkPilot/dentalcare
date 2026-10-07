@@ -23,10 +23,10 @@ export default function Tooth({
           y2="208"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#fffef4" />
-          <stop offset=".45" stopColor="#e1e9d9" />
-          <stop offset=".7" stopColor="#b9cbbb" />
-          <stop offset="1" stopColor="#f6f8e8" />
+          <stop stopColor="#fff0bd" />
+          <stop offset=".45" stopColor="#d9b973" />
+          <stop offset=".7" stopColor="#876329" />
+          <stop offset="1" stopColor="#ebce8c" />
         </linearGradient>
         <filter id={`${id}s`}>
           <feGaussianBlur stdDeviation="7" />
@@ -46,13 +46,13 @@ export default function Tooth({
           <path
             d="m96 115 8 72q16 27 32 0l8-72"
             fill={`url(#${id})`}
-            stroke="#94ad9a"
+            stroke="#a9874c"
           />
           {[130, 144, 158, 172, 186].map((y) => (
             <path
               key={y}
               d={`m100 ${y} 40-5`}
-              stroke="#6d8f7a"
+              stroke="#604721"
               strokeWidth="5"
               strokeLinecap="round"
             />
@@ -66,7 +66,7 @@ export default function Tooth({
         <path
           d="M64 77c-8-39 24-52 55-36 34-17 66-4 60 35-4 29-13 45-19 70-6 25-13 48-24 48-12 0-6-52-17-52-12 0-6 52-19 52-10 0-16-22-23-48-6-23-10-43-13-69Z"
           fill={`url(#${id})`}
-          stroke="#aabcaa"
+          stroke="#d9ba79"
           strokeWidth=".65"
         />
       )}
