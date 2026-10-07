@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import SmileLab, { Challenge, type Config } from "./components/SmileLab";
 import Tooth from "./components/Tooth";
+import SmileSignature from "./components/SmileSignature";
 import SmileParticles from "./components/SmileParticles";
 import { faqs, treatments } from "./content";
 import clinic from "../shared/clinic.json";
@@ -133,6 +134,22 @@ function Hero() {
         />
         <div className="hero-shade" />
         <div className="gold-arc" aria-hidden="true" />
+        <div className="portrait-seal" aria-hidden="true">
+          <svg viewBox="0 0 120 120">
+            <defs>
+              <path
+                id="seal-ring"
+                d="M60,60 m-44,0 a44,44 0 1,1 88,0 a44,44 0 1,1 -88,0"
+              />
+            </defs>
+            <text>
+              <textPath href="#seal-ring">
+                DENTAL CARE 24 · THE ART OF YOUR SMILE ·{" "}
+              </textPath>
+            </text>
+          </svg>
+          <span>✳</span>
+        </div>
         <span className="hero-concept">צילום קונספט</span>
         <span className="portrait-index" dir="ltr">
           THE ART OF A NATURAL SMILE / 01
@@ -824,6 +841,7 @@ export default function App() {
             <Hero />
             <Marquee />
             <About />
+            <SmileSignature />
             <Services />
             <SmileLab config={config} />
             <Process />

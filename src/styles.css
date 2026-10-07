@@ -2350,3 +2350,318 @@ footer {
     max-height: 620px;
   }
 }
+
+/* Signature experience: a scroll-drawn portrait of the clinic's approach. */
+.signature-experience {
+  height: 170vh;
+  position: relative;
+  background: #131310;
+}
+.signature-stage {
+  position: sticky;
+  top: 85px;
+  min-height: 680px;
+  height: calc(100vh - 85px);
+  max-height: 980px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 35px 7% 40px;
+  isolation: isolate;
+  border-block: 1px solid #d9b87824;
+}
+.signature-stage:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse at 28% 48%, #af84351c, transparent 58%),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent calc(25% - 1px),
+      #d9b87807 calc(25% - 1px),
+      #d9b87807 25%
+    );
+}
+.signature-topline {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #b5a487;
+}
+.signature-ghost {
+  position: absolute;
+  bottom: 19%;
+  left: -4%;
+  white-space: nowrap;
+  font:
+    500 clamp(100px, 15vw, 250px)/1 "DM Sans",
+    sans-serif;
+  letter-spacing: -0.065em;
+  color: #d9b87806;
+  z-index: -1;
+  direction: ltr;
+}
+.signature-layout {
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+  align-items: center;
+  gap: 3%;
+}
+.signature-intro h2 {
+  font-size: clamp(58px, 6vw, 96px);
+  line-height: 1.05;
+  margin: 24px 0;
+  letter-spacing: -3px;
+}
+.signature-intro p {
+  color: #bbaf99;
+  font-size: 20px;
+  line-height: 1.7;
+  margin-bottom: 28px;
+}
+.signature-drawing {
+  position: relative;
+  width: 100%;
+}
+.signature-drawing svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  filter: drop-shadow(0 0 12px #d9b87822);
+}
+.signature-orbit {
+  position: absolute;
+  inset: -10% 8%;
+  border: 1px solid #d9b87816;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.signature-orbit i {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #e4c17b;
+  box-shadow: 0 0 20px #d9b878aa;
+  top: 50%;
+  left: -3px;
+}
+.signature-orbit i + i {
+  left: auto;
+  right: -3px;
+}
+.signature-drawing-note {
+  display: block;
+  text-align: center;
+  font-size: 11px;
+  color: #aa9c84;
+  margin-top: 25px;
+}
+.signature-chapters {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  border-top: 1px solid #d9b87827;
+  padding-top: 24px;
+}
+.signature-chapters > div {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  align-items: baseline;
+  gap: 3px 12px;
+}
+.signature-chapters span {
+  font:
+    12px "DM Sans",
+    sans-serif;
+  color: #d9b878;
+}
+.signature-chapters strong {
+  font-size: 24px;
+  font-weight: 400;
+}
+.signature-chapters small {
+  grid-column: 2;
+  font-size: 14px;
+  color: #b8aa91;
+}
+.signature-meter {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #d9b87810;
+}
+.signature-meter span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #785326, #eed9a5);
+  transform-origin: right;
+}
+.portrait-seal {
+  position: absolute;
+  width: 122px;
+  height: 122px;
+  bottom: 19%;
+  left: 8%;
+  color: #f1d69c;
+}
+.portrait-seal svg {
+  width: 100%;
+  animation: seal-turn 38s linear infinite;
+  fill: currentColor;
+  font:
+    10px "DM Sans",
+    sans-serif;
+  letter-spacing: 2px;
+}
+.portrait-seal > span {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 38px;
+  font-weight: 200;
+}
+@keyframes seal-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  .button.primary {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .button.primary:after {
+    content: "";
+    position: absolute;
+    inset: -80% -40%;
+    z-index: -1;
+    background: linear-gradient(
+      110deg,
+      transparent 35%,
+      #fff6d666 50%,
+      transparent 65%
+    );
+    transform: translateX(90%);
+    transition: transform 0.8s ease;
+  }
+  .button.primary:hover:after {
+    transform: translateX(-90%);
+  }
+  .button svg,
+  .text-link svg {
+    transition: transform 0.3s ease;
+  }
+  .button:hover svg,
+  .text-link:hover svg {
+    transform: translate(-3px, -3px);
+  }
+  .treatment-row {
+    transition:
+      background 0.35s,
+      padding 0.35s;
+  }
+  .treatment-row:hover {
+    background: linear-gradient(270deg, #d9b8780c, transparent);
+    padding-inline: 15px;
+  }
+}
+@media (max-width: 900px) {
+  .signature-experience {
+    height: auto;
+  }
+  .signature-stage {
+    position: relative;
+    top: auto;
+    height: auto;
+    max-height: none;
+    min-height: 0;
+    padding: 30px 6% 36px;
+    gap: 45px;
+  }
+  .signature-layout {
+    grid-template-columns: 1fr;
+    gap: 42px;
+  }
+  .signature-intro h2 {
+    font-size: clamp(54px, 9vw, 80px);
+  }
+  .signature-intro p {
+    font-size: 18px;
+  }
+  .signature-drawing {
+    max-width: 650px;
+    margin: 0 auto;
+  }
+  .signature-orbit {
+    inset: -3% 12%;
+  }
+  .signature-topline {
+    letter-spacing: 1px;
+    font-size: 9px;
+    gap: 15px;
+  }
+  .signature-chapters {
+    gap: 12px;
+  }
+  .signature-chapters > div {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .signature-chapters strong {
+    font-size: 20px;
+  }
+  .signature-chapters small {
+    font-size: 12px;
+  }
+  .portrait-seal {
+    width: 90px;
+    height: 90px;
+    bottom: 13%;
+    left: 5%;
+    opacity: 0.65;
+  }
+}
+@media (max-width: 600px) {
+  .portrait-seal {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .portrait-seal svg {
+    animation: none;
+  }
+  .signature-experience {
+    height: auto;
+  }
+  .signature-stage {
+    position: relative;
+    top: auto;
+  }
+  .button.primary:after {
+    display: none;
+  }
+}
+
+.portrait-seal svg {
+  direction: ltr;
+}
+.signature-topline > span {
+  max-width: none;
+}
+@media (max-width: 900px) {
+  .signature-chapters > div {
+    opacity: 1 !important;
+  }
+}
