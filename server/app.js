@@ -50,6 +50,13 @@ export function createApp({
       .map((origin) => origin.trim())
       .filter(Boolean),
   );
+  // Render serves the same frontend at its managed HTTPS address while custom
+  // domain certificates propagate. Trust only this service's configured URL.
+  if (env.RENDER_EXTERNAL_URL) {
+    const renderOrigin = new URL(env.RENDER_EXTERNAL_URL);
+    if (renderOrigin.protocol === "https:" && renderOrigin.hostname.endsWith(".onrender.com"))
+      allowedOrigins.add(renderOrigin.origin);
+  }
   app.use("/api", (req, res, next) => {
     const origin = req.get("origin");
     if (origin && allowedOrigins.has(origin)) {

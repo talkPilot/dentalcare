@@ -262,3 +262,10 @@ test("separate frontend origins get scoped CORS preflight without wildcard acces
   assert.equal(rejected.status, 403);
   assert.equal(rejected.headers["access-control-allow-origin"], undefined);
 });
+test('managed Render origin can submit while unrelated Render sites remain blocked', async () => {
+  const origin='https://dentalcare-api-h0no.onrender.com';
+  const {app,calls}=setup({}, {...env,NODE_ENV:'production',PUBLIC_ORIGIN:'https://dental-care24.com',PRIVACY_REVIEWED:'true',ALLOW_WITHOUT_TURNSTILE:'true',RENDER_EXTERNAL_URL:origin});
+  assert.equal((await request(app).post('/api/contact').set('Origin',origin).send(lead())).status,200);
+  assert.equal(calls.mail.length,1);
+  assert.equal((await request(app).post('/api/contact').set('Origin','https://another.onrender.com').send(lead())).status,403);
+});
